@@ -10,7 +10,7 @@
 #include <core/SkFont.h>
 #include <core/SkCanvas.h>
 #include <map>
-#include <QtCore/QString>
+//#include <QtCore/QString>
 
 namespace tex {
 
@@ -61,6 +61,7 @@ public:
 /**************************************************************************************************/
 
 class TextLayout_skia : public TextLayout {
+    using _out_ = Rect;
 private:
   SkFont _font;
   std::string _text;
@@ -68,7 +69,7 @@ private:
 public:
   TextLayout_skia(const std::wstring &src, const sptr<Font_skia> &font);
 
-  virtual void getBounds(_out_ Rect &r) override;
+  virtual void getBounds(Rect &r) override;
 
   virtual void draw(Graphics2D &g2, float x, float y) override;
 };
