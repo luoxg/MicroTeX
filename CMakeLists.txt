@@ -1,7 +1,17 @@
 cmake_minimum_required(VERSION 3.16)
 project(LaTeX)
 
+set(CMAKE_CXX_STANDARD 17)
+set(BUILD_SHARED_LIBS OFF)
+
 add_library(LaTeX "")
+
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wno-unused-local-typedef -Wno-unused-variable -Wno-unused-function -Wno-c++11-narrowing")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wreorder-ctor -Wcast-qual -Wmismatched-tags -Wmisleading-indentation -Wsign-compare -Wtautological-constant-out-of-range-compare -Wdeprecated-copy")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstandalone-debug")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=leak -g")
+add_subdirectory(external)
+
 
 # MSVC Compat
 
@@ -51,8 +61,8 @@ if (MSVC)
     find_package(tinyxml2 CONFIG REQUIRED)
     target_link_libraries(LaTeX PRIVATE tinyxml2::tinyxml2)
 else ()
-    find_package(PkgConfig REQUIRED)
-    pkg_check_modules(tinyxml2 REQUIRED IMPORTED_TARGET tinyxml2)
+#    find_package(PkgConfig REQUIRED)
+#    pkg_check_modules(tinyxml2 REQUIRED IMPORTED_TARGET tinyxml2)
     target_link_libraries(LaTeX PRIVATE tinyxml2)
 endif ()
 
@@ -207,27 +217,22 @@ elseif (WIN32)
     set_target_properties(LaTeXWin32Sample PROPERTIES OUTPUT_NAME LaTeX)
 elseif (UNIX)
     message(STATUS "We are working with GTK on a Unix like OS")
-    target_compile_definitions(LaTeX PUBLIC -DBUILD_GTK)
-    find_package(Fontconfig REQUIRED)
-    pkg_check_modules(GTKMM REQUIRED IMPORTED_TARGET gtkmm-3.0)
-    pkg_check_modules(GSVMM REQUIRED IMPORTED_TARGET gtksourceviewmm-3.0)
-    pkg_check_modules(CairoMM REQUIRED IMPORTED_TARGET cairomm-1.0)
-    target_sources(LaTeX PRIVATE
-            src/platform/cairo/graphic_cairo.cpp
+    target_compile_definitions(LaTeX PUBLIC -DBUILD_SKIA -DSK_GL)
+    target_include_directories(LaTeX PUBLIC src)
+#    target_sources(LaTeX PRIVATE
+#            src/platform/skia/graphic_skia.cpp
+#            )
+
+    add_executable(LaTeXSkiaSample
+            src/platform/skia/graphic_skia.cpp
+            src/samples/skia_test.cpp
             )
-    target_link_libraries(LaTeX PRIVATE
-            PkgConfig::GTKMM #include <pangomm/fontdescription.h>
-            PkgConfig::CairoMM #include <cairomm/context.h>
-            Fontconfig::Fontconfig
-            )
-    add_executable(LaTeXGtkSample
-            src/samples/gtkmm_main.cpp
-            )
-    target_link_libraries(LaTeXGtkSample PRIVATE
-            PkgConfig::GSVMM
+    target_link_libraries(LaTeXSkiaSample PRIVATE
             LaTeX
+            skia
+            XercesC::XercesC
+            XalanC::XalanC
             )
-    set_target_properties(LaTeXGtkSample PROPERTIES OUTPUT_NAME LaTeX)
 else ()
     message(STATUS "We are working on a unknown platform")
     # other platforms...
@@ -235,7 +240,7 @@ endif ()
 
 # compile options
 
-option(HAVE_LOG "If enable log" ON)
+option(HAVE_LOG "If enable log" OFF)
 if (HAVE_LOG)
     add_definitions(-DHAVE_LOG)
 endif ()
