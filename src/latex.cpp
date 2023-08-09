@@ -56,7 +56,7 @@ string LaTeX::queryResourceLocation(string& custom_path) {
     char* userdata_fallback;
     asprintf(&userdata_fallback, "%s/.local/share/clatexmath/", home);
     paths.push(string(userdata_fallback));
-    delete userdata_fallback;
+    free(userdata_fallback);
   }
   paths.push("/usr/share/clatexmath/");
   paths.push("/usr/local/share/clatexmath/");

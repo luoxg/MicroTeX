@@ -25,6 +25,8 @@ cmake_minimum_required(VERSION 3.12.0)
 # for optional features.
 set(CMAKE_CXX_STANDARD 14)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
+
 # Use folders (for IDE project grouping)
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
@@ -189,3 +191,12 @@ message(STATUS "  Transcoder:                ${transcoder}")
 message(STATUS "  NetAccessor:               ${netaccessor}")
 message(STATUS "  Message Loader:            ${msgloader}")
 message(STATUS "  XMLCh type:                ${xmlch_type}")
+
+add_library(XercesC::XercesC INTERFACE IMPORTED GLOBAL)
+target_link_libraries(XercesC::XercesC INTERFACE xerces-c)
+target_include_directories(XercesC::XercesC INTERFACE
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}/src
+        ${CMAKE_CURRENT_SOURCE_DIR}/src
+        )

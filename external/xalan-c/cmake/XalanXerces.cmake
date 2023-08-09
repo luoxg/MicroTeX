@@ -19,4 +19,4 @@
 
 # Determine if Xerces-C
 
-find_package(XercesC 3.1 REQUIRED)
+#find_package(XercesC 3.1 REQUIRED)
