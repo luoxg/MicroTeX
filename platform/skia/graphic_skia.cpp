@@ -1,5 +1,6 @@
 #include "graphic_skia.h"
 
+#include <include/core/SkPathEffect.h>
 #include <include/effects/SkDashPathEffect.h>
 #include <modules/skparagraph/include/FontCollection.h>
 #include <modules/skparagraph/include/Paragraph.h>
