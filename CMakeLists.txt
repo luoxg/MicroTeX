@@ -4,6 +4,9 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fsanitize=address -fsanitize=leak -g")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fstandalone-debug")
+
 project(
     microtex
     VERSION 1.0.0
@@ -108,3 +111,15 @@ install(DIRECTORY res/ DESTINATION share/microtex)
 # install prebuilt scripts
 install(FILES prebuilt/otf2clm.py DESTINATION bin)
 install(PROGRAMS prebuilt/otf2clm.sh DESTINATION bin RENAME otf2clm)
+
+add_subdirectory(external/skia)
+
+add_executable(skia-test
+        test.cpp
+        platform/skia/graphic_skia.cpp
+        )
+
+target_include_directories(skia-test PUBLIC
+        platform/skia
+        )
+target_link_libraries(skia-test PRIVATE skia microtex)
