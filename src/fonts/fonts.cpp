@@ -55,7 +55,10 @@ void DefaultTeXFont::__register_symbols_set(const SymbolsSet& set) {
 void DefaultTeXFont::__push_symbols(const __symbol_component* symbols, const int len) {
   for (int i = 0; i < len; i++) {
     const __symbol_component& c = symbols[i];
-    _symbolMappings[c.name] = new CharFont(c.code, c.font);
+      if (_symbolMappings.find(c.name) == _symbolMappings.end()) {
+          delete _symbolMappings[c.name];
+      }
+      _symbolMappings[c.name] = new CharFont(c.code, c.font);
   }
 }
 
