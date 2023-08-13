@@ -36,7 +36,7 @@ option(BUILD_EXAMPLE_QTPNG "Build Qt png example, only work with -DQT=ON flag" O
 option(GDI "Build with GDI" OFF)
 option(BUILD_EXAMPLE_WIN32 "Build Win32 GDI example, only work with -DGDI=ON flag" OFF)
 option(BUILD_EXAMPLE_MEMCHECK "Build memory check example" OFF)
-option(HAVE_LOG "If enable log" ON)
+option(HAVE_LOG "If enable log" OFF)
 if (HAVE_LOG)
     add_definitions(-DHAVE_LOG)
 endif ()
