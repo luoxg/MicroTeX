@@ -34,6 +34,38 @@ void listFiles(const std::string &path, std::map<std::string, std::string> &map)
     closedir(dir);
 }
 
+bool isBracesMatched(const std::string& content, size_t start, const std::string& closeBrackets) {
+    size_t index1 = content.find('}', start);
+    size_t index2 = content.find('{', start);
+    size_t index3 = content.find(closeBrackets, start);
+    return index3 <= index1 || index2 <= index1;
+}
+
+std::string ensureBracketsMatched(const std::string& latex) {
+    std::string result = latex;
+    size_t index = 0;
+    std::string closeParentheses = "\\right)";
+    std::string closeBrackets = "\\right]";
+    std::string closeBraces = "\\}";
+    while ((index = result.find("\\left", index)) != std::string::npos) {
+        char ch = result[index + 5];
+        if ((ch == '(' || ch == '[')
+            && !isBracesMatched(result, index + 6, ch == '(' ? closeParentheses : closeBrackets)) {
+            result.insert(index, "}");
+            result.insert(index + 7, "{");
+            index += 8;
+        } else if (ch == '\\' && result[index + 6] == '{'
+                   && !isBracesMatched(result, index + 7, closeBraces)) {
+            result.insert(index, "}");
+            result.insert(index + 8, "{");
+            index += 9;
+        } else {
+            index += 5;
+        }
+    }
+    return result;
+}
+
 void test1(std::map<std::string, std::string> &map) {
 
     float _textSize = 20.f;
